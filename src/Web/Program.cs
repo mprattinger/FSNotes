@@ -1,3 +1,4 @@
+using FSNotes.UI;
 using FSNotes.Web.Common.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(Extensions).Assembly);
 
 app.Run();
