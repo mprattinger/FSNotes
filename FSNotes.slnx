@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/UI/">
+    <Project Path="src/UI/FSNotes.UI.csproj" />
+  </Folder>
+  <Folder Name="/src/Web/">
+    <Project Path="src/Web/FSNotes.Web.csproj" />
+  </Folder>
+</Solution>
