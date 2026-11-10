@@ -1,11 +1,16 @@
-using FSNotes.UI;
+using FSNotes.Web.Common;
 using FSNotes.Web.Common.Layout;
+using FSNotes.Web.Features;
+using Extensions = FSNotes.UI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.AddCommon();
+builder.AddFeatures();
 
 var app = builder.Build();
 
