@@ -1,13 +1,26 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    background-color: gray;
+}
+
+.side {
+    display: flex;
+    flex-direction: column;
+    background-color: orange;
+    width: 20%;
+    padding: 1rem;
+}
+
 main {
     position: relative;
     display: flex;
     flex-direction: column;
+    background-color: green;
+    width: 100%;
+    padding: 1rem;
 }
-
-
-@media (max-width: 640.98px) {}
-
-@media (min-width: 641px) {}
 
 #blazor-error-ui {
     color-scheme: light only;

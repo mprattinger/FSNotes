@@ -1,0 +1,19 @@
+﻿@using FSNotes.UI.Features.Structure.Models
+@using FSNotes.UI.Features.Structure.Services
+@inject IStructureService StructureService
+
+<div class="container">
+    @foreach(var entity in structure)
+    {
+        <StructureEntityComponent Entity="entity" />
+    }
+</div>
+
+@code {
+    private List<StructureEntity> structure = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        structure = await StructureService.GetStructureAsync();
+    }
+}

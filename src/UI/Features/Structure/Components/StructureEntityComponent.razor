@@ -1,0 +1,58 @@
+﻿@using FSNotes.UI.Features.Structure.Models
+@using FlintSoft.Components.Icons
+
+<div class="container" style="margin-left: @(Entity.Level * 1)rem;">
+    <div class="line">
+        @if (canExpand())
+        {
+            <div class="expand" @onclick="toggleExpand">
+                @if (show)
+                {
+                    <DownChevron />
+                }
+                else
+                {
+                    <LeftChevron />
+                }
+            </div>
+        } else
+        {
+            <div class="noexpand"></div>
+        }
+        <span>@Entity.Name</span>
+        <div class="actions">
+            <Plus />
+            <div>...</div>
+        </div>
+    </div>
+    @if (show)
+    {
+        @if (Entity.Children != null && Entity.Children.Count > 0)
+        {
+            <div class="child-container">
+                @foreach (var child in Entity.Children)
+                {
+                    <StructureEntityComponent Entity="child" />
+             
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    bool show = false;
+
+    [Parameter, EditorRequired]
+    public StructureEntity Entity { get; set; } = default!;
+
+    bool canExpand()
+    {
+        return Entity.Children.Count() > 0 && Entity.Type == StructureType.Folder;
+    }
+
+    void toggleExpand()
+    {
+        show = !show;
+    }
+}

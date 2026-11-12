@@ -1,0 +1,31 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.line {
+    display: flex;
+    min-height: 2rem;
+    background-color: lightblue;
+}
+
+span {
+    flex: 1;
+}
+
+.expand {
+    width: 2rem;
+}
+
+.noexpand {
+    width: 2rem;
+}
+
+.actions {
+    display: flex;
+    gap: .5rem;
+
+    div {
+        padding-bottom: .5rem;
+    }
+}

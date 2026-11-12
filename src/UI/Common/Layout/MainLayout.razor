@@ -1,8 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@using FSNotes.UI.Features.Structure.Components
+@inherits LayoutComponentBase
 
-<main>
-    @Body
-</main>
+<div class="container">
+    <div class="side">
+        <StructureComponent />
+    </div>
+    <main>
+        @Body
+    </main>
+</div>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
