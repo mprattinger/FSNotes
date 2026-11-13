@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazorise.Markdown" Version="2.4.3" />
-    <PackageReference Include="FlintSoft.Components" Version="2.0.27" />
+    <PackageReference Include="FlintSoft.Components" Version="2.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
   </ItemGroup>

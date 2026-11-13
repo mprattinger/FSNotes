@@ -1,6 +1,7 @@
 .container {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .line {
@@ -15,6 +16,7 @@ span {
 
 .expand {
     width: 2rem;
+    cursor: pointer;
 }
 
 .noexpand {
@@ -24,8 +26,5 @@ span {
 .actions {
     display: flex;
     gap: .5rem;
-
-    div {
-        padding-bottom: .5rem;
-    }
+    cursor: pointer;
 }
