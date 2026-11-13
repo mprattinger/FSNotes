@@ -2,8 +2,8 @@
 
 public class StructureEntity
 {
-    public Guid Id { get; set; }
-    public Guid? Parent { get; set; }
+    public string Id { get; set; }
+    public string? Parent { get; set; }
     public StructureType Type { get; set; }
     public string Name { get; set; } = "";
 
