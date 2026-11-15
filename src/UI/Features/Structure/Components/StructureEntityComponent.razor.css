@@ -7,7 +7,6 @@
 .line {
     display: flex;
     min-height: 2rem;
-    background-color: lightblue;
 }
 
 span {
@@ -27,4 +26,18 @@ span {
     display: flex;
     gap: .5rem;
     cursor: pointer;
+}
+
+::deep .plus-container {
+    display: flex;
+    flex-direction: column;
+    width: 10rem;
+
+        & > div:hover {
+            background-color: lightgray;
+        }
+}
+
+.new-folder-container {
+    display: flex;
 }

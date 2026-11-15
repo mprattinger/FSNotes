@@ -1,19 +1,38 @@
-﻿@using FSNotes.UI.Features.Structure.Models
+﻿@using FSNotes.UI.Features.Structure.Contexts
 @using FSNotes.UI.Features.Structure.Services
 @inject IStructureService StructureService
+@implements IDisposable
 
-<div class="container">
-    @foreach(var entity in structure)
-    {
-        <StructureEntityComponent Entity="entity" />
-    }
-</div>
+<CascadingValue Value="context">
+    <div class="container" >
+        @foreach (var entity in context?.Structures ?? [])
+        {
+            <StructureEntityComponent @key="entity.Id" Entity="entity" />
+        }
+    </div>
+</CascadingValue>
 
 @code {
-    private List<StructureEntity> structure = [];
+    IStructureContext? context;
 
     protected override async Task OnInitializedAsync()
     {
-        structure = await StructureService.GetStructureAsync();
+        context = new StructureContext(StructureService);
+        context.Changed += onContextChanged;
+
+        await context.Reload();
+    }
+
+    void onContextChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (context is not null)
+        {
+            context.Changed -= onContextChanged;
+        }
     }
 }

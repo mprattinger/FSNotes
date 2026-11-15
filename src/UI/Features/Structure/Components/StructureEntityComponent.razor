@@ -1,6 +1,9 @@
-﻿@using FSNotes.UI.Features.Structure.Models
+﻿@using FSNotes.UI.Features.Structure.Contexts
+@using FSNotes.UI.Features.Structure.Models
+@using FSNotes.UI.Features.Structure.Services
 @using FlintSoft.Components
 @using FlintSoft.Components.Icons
+@inject IStructureService StructureService
 
 <div class="container" style="margin-left: @(Entity.Level * 1)rem;">
     <div class="line">
@@ -16,17 +19,20 @@
                     <RightChevron />
                 }
             </div>
-        } else
+        }
+        else
         {
             <div class="noexpand"></div>
         }
         <span>@Entity.Name</span>
         <div class="actions">
-            <FsContextMenu>
+            <FsContextMenu CloseOnContentClick="true">
                 <Icon><Plus /></Icon>
                 <ChildContent>
-                    <FsButton Compact>New Folder</FsButton>
-                    <FsButton Compact>New Note</FsButton>
+                    <div class="plus-container">
+                        <div @onclick="newFolder" role="menuitem">New Folder</div>
+                        <div>New Note</div>
+                    </div>
                 </ChildContent>
             </FsContextMenu>
             <Ellipsis />
@@ -46,12 +52,36 @@
         }
     }
 </div>
+@if (showNewFolder)
+{
+    <div class="new-folder-container">
+        <input type="text" placeholder="Folder Name" @ref="folderInput" @bind-value="newFolderName" />
+        <Check OnClicked="createNewFolder" />
+        <Cross OnClicked="toggleNewFolder" />
+    </div>
+}
 
 @code {
     bool show = false;
+    bool showNewFolder = false;
+    private ElementReference folderInput;
+    string newFolderName = string.Empty;
+    bool newFolderFocusePending = false;
+
+    [CascadingParameter]
+    public IStructureContext? Context { get; set; }
 
     [Parameter, EditorRequired]
     public StructureEntity Entity { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (newFolderFocusePending)
+        {
+            newFolderFocusePending = false;
+            await folderInput.FocusAsync();
+        }
+    }
 
     bool canExpand()
     {
@@ -61,5 +91,37 @@
     void toggleExpand()
     {
         show = !show;
+
+    }
+
+    void toggleNewFolder()
+    {
+        showNewFolder = !showNewFolder;
+        newFolderName = string.Empty;
+        newFolderFocusePending = false;
+    }
+
+    async Task newFolder()
+    {
+        toggleNewFolder();
+
+        newFolderFocusePending = true;
+    }
+
+    async Task createNewFolder()
+    {
+        if (!string.IsNullOrWhiteSpace(newFolderName))
+        {
+            await StructureService.AddFolder(newFolderName, Entity.Id);
+
+            if(Context is not null)
+            {
+                await Context.Reload();
+            }
+
+            toggleNewFolder();
+
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

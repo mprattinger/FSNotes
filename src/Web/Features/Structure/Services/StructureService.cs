@@ -26,13 +26,13 @@ public class StructureService : IStructureService
             Id = "01a1d527-f67c-784b-93aa-444624facd70",
                 Parent = null,
                 Type = StructureType.Folder,
-                Name = "Folder1"
+                Name = "Folder2"
         },
         new() {
             Id = "01a1d527-f67c-7666-94a9-713f90465bd3",
                 Parent = null,
                 Type = StructureType.Folder,
-                Name = "Folder1"
+                Name = "Folder3"
         },
         new() {
             Id = "01a1d52a-4b90-7327-92de-b53ab6c597ba",
