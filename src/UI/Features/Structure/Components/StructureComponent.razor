@@ -5,6 +5,18 @@
 
 <CascadingValue Value="context">
     <div class="container" >
+        <div class="actions">
+            <FsContextMenu CloseOnContentClick="true">
+                <Icon><Plus /></Icon>
+                <ChildContent>
+                    <div class="plus-container">
+                        <div @onclick="newFolder" role="menuitem">New Folder</div>
+                        <div>New Note</div>
+                    </div>
+                </ChildContent>
+            </FsContextMenu>
+        </div>
+        <NewFolder @ref="newFolderRef" OnNewFolder="handleNewFolder" />
         @foreach (var entity in context?.Structures ?? [])
         {
             <StructureEntityComponent @key="entity.Id" Entity="entity" />
@@ -14,6 +26,7 @@
 
 @code {
     IStructureContext? context;
+    private NewFolder newFolderRef = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,6 +34,28 @@
         context.Changed += onContextChanged;
 
         await context.Reload();
+    }
+    async Task newFolder()
+    {
+        if (newFolderRef is not null)
+        {
+            newFolderRef.Show();
+        }
+    }
+
+    async Task handleNewFolder(string folderName)
+    {
+        if (!string.IsNullOrWhiteSpace(folderName))
+        {
+            await StructureService.AddFolder(folderName, "");
+
+            if (context is not null)
+            {
+                await context.Reload();
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     void onContextChanged()

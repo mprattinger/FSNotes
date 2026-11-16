@@ -1,8 +1,6 @@
 ﻿@using FSNotes.UI.Features.Structure.Contexts
 @using FSNotes.UI.Features.Structure.Models
 @using FSNotes.UI.Features.Structure.Services
-@using FlintSoft.Components
-@using FlintSoft.Components.Icons
 @inject IStructureService StructureService
 
 <div class="container" style="margin-left: @(Entity.Level * 1)rem;">
@@ -52,36 +50,17 @@
         }
     }
 </div>
-@if (showNewFolder)
-{
-    <div class="new-folder-container">
-        <input type="text" placeholder="Folder Name" @ref="folderInput" @bind-value="newFolderName" />
-        <Check OnClicked="createNewFolder" />
-        <Cross OnClicked="toggleNewFolder" />
-    </div>
-}
+<NewFolder @ref="newFolderRef" OnNewFolder="handleNewFolder" />
 
 @code {
     bool show = false;
-    bool showNewFolder = false;
-    private ElementReference folderInput;
-    string newFolderName = string.Empty;
-    bool newFolderFocusePending = false;
+    private NewFolder newFolderRef = default!;
 
     [CascadingParameter]
     public IStructureContext? Context { get; set; }
 
     [Parameter, EditorRequired]
     public StructureEntity Entity { get; set; } = default!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (newFolderFocusePending)
-        {
-            newFolderFocusePending = false;
-            await folderInput.FocusAsync();
-        }
-    }
 
     bool canExpand()
     {
@@ -94,32 +73,24 @@
 
     }
 
-    void toggleNewFolder()
-    {
-        showNewFolder = !showNewFolder;
-        newFolderName = string.Empty;
-        newFolderFocusePending = false;
-    }
-
     async Task newFolder()
     {
-        toggleNewFolder();
-
-        newFolderFocusePending = true;
+        if (newFolderRef is not null)
+        {
+            await newFolderRef.Show();
+        }
     }
 
-    async Task createNewFolder()
+    async Task handleNewFolder(string folderName)
     {
-        if (!string.IsNullOrWhiteSpace(newFolderName))
+        if (!string.IsNullOrWhiteSpace(folderName))
         {
-            await StructureService.AddFolder(newFolderName, Entity.Id);
+            await StructureService.AddFolder(folderName, Entity.Id);
 
-            if(Context is not null)
+            if (Context is not null)
             {
                 await Context.Reload();
             }
-
-            toggleNewFolder();
 
             await InvokeAsync(StateHasChanged);
         }

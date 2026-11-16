@@ -1,0 +1,61 @@
+﻿@if (show)
+{
+    <div class="new-folder-container">
+        <input type="text" placeholder="Folder Name" @ref="folderInput" @bind-value="newFolderName" />
+        <Check OnClicked="createNewFolder" />
+        <Cross OnClicked="toggleNewFolder" />
+    </div>
+}
+
+@code {
+    bool show = false;
+    private ElementReference folderInput;
+    string newFolderName = string.Empty;
+    bool newFolderFocusePending = false;
+
+    [Parameter]
+    public EventCallback<string> OnNewFolder { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (newFolderFocusePending)
+        {
+            newFolderFocusePending = false;
+            await folderInput.FocusAsync();
+        }
+    }
+
+    void toggleNewFolder()
+    {
+        show = !show;
+        newFolderName = string.Empty;
+        newFolderFocusePending = false;
+    }
+
+    public async Task Show()
+    {
+        show = true;
+        newFolderFocusePending = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async Task createNewFolder()
+    {
+        if (!string.IsNullOrWhiteSpace(newFolderName))
+        {
+            // await StructureService.AddFolder(newFolderName, Entity.Id);
+
+            // if (Context is not null)
+            // {
+            //     await Context.Reload();
+            // }
+
+            await OnNewFolder.InvokeAsync(newFolderName);
+
+            toggleNewFolder();
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}
