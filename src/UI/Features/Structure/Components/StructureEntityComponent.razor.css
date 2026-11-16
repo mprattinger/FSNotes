@@ -32,12 +32,18 @@ span {
     display: flex;
     flex-direction: column;
     width: 10rem;
+    gap: .5rem;
+        
+        & > div {
+            padding: .1rem .5rem;
+        }
 
         & > div:hover {
             background-color: lightgray;
         }
 }
 
-.new-folder-container {
-    display: flex;
+::deep .context-menu > section {
+    padding: .5rem 0;
+    top: calc(100% - .3rem);
 }
