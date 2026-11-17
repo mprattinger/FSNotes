@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.md-container {
+    background-color: white;
+}

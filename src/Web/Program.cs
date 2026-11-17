@@ -1,3 +1,4 @@
+using FSNotes.UI;
 using FSNotes.Web.Common;
 using FSNotes.Web.Common.Layout;
 using FSNotes.Web.Features;
@@ -12,6 +13,8 @@ builder.Services.AddRazorComponents()
 builder.AddCommon();
 builder.AddFeatures();
 
+builder.AddUI();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +28,8 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+app.UseStaticFiles();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

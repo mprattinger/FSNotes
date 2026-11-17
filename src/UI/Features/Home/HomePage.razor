@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using Blazorise
 
-<h3>HomePage</h3>
+<div class="container">
+    <div class="top">
+        <FsText Placeholder="Title" @bind-Value="Title" style="width: 600px;" />
+        <div class="actions">
+            <FsButton Appearance="FsAppearance.Action">Save</FsButton>
+        </div>
+    </div>
+    <div class="md-container">
+        <Markdown @bind-Value="MarkdownContent"  />
+    </div>
+</div>
 
 @code {
-
+    public string Title { get; set; } = "";
+    public string MarkdownContent { get; set; } = "";
 }

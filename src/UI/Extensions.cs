@@ -1,3 +1,4 @@
+using Blazorise;
 using FSNotes.UI.Common;
 using FSNotes.UI.Features;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +9,12 @@ public static class Extensions
 {
     public static TBuilder AddUI<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
+        builder.Services.AddBlazorise(options =>
+        {
+            options.Immediate = true;
+        })
+            .AddEmptyProviders();
+
         builder.AddCommon();
         builder.AddFeatures();
 

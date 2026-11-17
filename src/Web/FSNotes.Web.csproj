@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <PackageReference Include="Blazorise.Markdown" Version="2.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\UI\FSNotes.UI.csproj" />
   </ItemGroup>
 
