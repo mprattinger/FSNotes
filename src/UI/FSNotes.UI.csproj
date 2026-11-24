@@ -5,6 +5,7 @@
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e1a0c5c1-344e-4864-b756-427cbe0d11c3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,5 +13,10 @@
     <PackageReference Include="FlintSoft.Components" Version="2.0.33" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Structure\Models\" />
+    <Folder Include="Features\Structure\Services\" />
   </ItemGroup>
 </Project>

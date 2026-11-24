@@ -8,11 +8,16 @@
     <ProjectReference Include="..\UI\FSNotes.UI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\notes\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <UserSecretsId>8cb591f8-6156-45e5-bc8a-cb0b026c96a2</UserSecretsId>
   </PropertyGroup>
 
 </Project>

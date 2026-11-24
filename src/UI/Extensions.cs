@@ -12,6 +12,7 @@ public static class Extensions
         builder.Services.AddBlazorise(options =>
         {
             options.Immediate = true;
+            options.ProductToken = builder.Configuration["Licensing:BlazoriseProductToken"] ?? throw new InvalidOperationException("Blazorise product token is not configured. Please set the 'Licensing:BlazoriseProductToken' configuration value.");
         })
             .AddEmptyProviders();
 

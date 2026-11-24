@@ -1,9 +1,8 @@
-﻿@using FSNotes.UI.Features.Structure.Contexts
-@using FSNotes.UI.Features.Structure.Services
-@inject IStructureService StructureService
+﻿@using FSNotes.UI.Common.Contexts
+@using FSNotes.UI.Features.Storage.Services
+@inject IStorageService StorageService
 @implements IDisposable
 
-<CascadingValue Value="context">
     <div class="container" >
         <div class="actions">
             <FsContextMenu CloseOnContentClick="true" Class="context-menu">
@@ -17,29 +16,31 @@
             </FsContextMenu>
         </div>
         <NewFolder @ref="newFolderRef" OnNewFolder="handleNewFolder" />
-        @foreach (var entity in context?.Structures ?? [])
+    @foreach (var entity in StorageService.RootTree.Children)
         {
-            <StructureEntityComponent @key="entity.Id" Entity="entity" />
+            <StructureEntityComponent @key="entity.FullPath" Entity="entity" />
         }
     </div>
-</CascadingValue>
 
 @code {
-    IStructureContext? context;
     private NewFolder newFolderRef = default!;
+    
+    [CascadingParameter]
+    public ApplicationContext? Context { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    override protected void OnInitialized()
     {
-        context = new StructureContext(StructureService);
-        context.Changed += onContextChanged;
-
-        await context.Reload();
+        if (Context is not null)
+        {
+            Context.StorageUpdated   += onContextChanged;
+        }
     }
+
     async Task newFolder()
     {
         if (newFolderRef is not null)
         {
-            newFolderRef.Show();
+            await newFolderRef.ShowAsync();
         }
     }
 
@@ -47,11 +48,11 @@
     {
         if (!string.IsNullOrWhiteSpace(folderName))
         {
-            await StructureService.AddFolder(folderName, "");
+            StorageService.CreateFolder(folderName, "");
 
-            if (context is not null)
+            if (Context is not null)
             {
-                await context.Reload();
+                Context.NotifyStorageUpdated();
             }
 
             await InvokeAsync(StateHasChanged);
@@ -65,9 +66,9 @@
 
     public void Dispose()
     {
-        if (context is not null)
+        if (Context is not null)
         {
-            context.Changed -= onContextChanged;
+            Context.StorageUpdated -= onContextChanged;
         }
     }
 }

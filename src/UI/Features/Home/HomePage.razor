@@ -1,19 +1,113 @@
 ﻿@page "/"
+@page "/{note}"
 @using Blazorise
+@using FSNotes.UI.Common.Contexts
+@using FSNotes.UI.Features.Storage.Services
+@inject IStorageService StorageService
+@inject NavigationManager NavigationManager
 
 <div class="container">
     <div class="top">
-        <FsText Placeholder="Title" @bind-Value="Title" style="width: 600px;" />
+        <FsText Placeholder="Title" @bind-Value="title" style="width: 600px;" />
         <div class="actions">
-            <FsButton Appearance="FsAppearance.Action">Save</FsButton>
+            <FsButton Appearance="FsAppearance.Action" OnClick="SaveNote">Save</FsButton>
+            <FsButton Appearance="FsAppearance.Danger">Cancel</FsButton>
         </div>
     </div>
     <div class="md-container">
-        <Markdown @bind-Value="MarkdownContent"  />
+        <Markdown @bind-Value="markdownContent"
+                  Class="md-editor"
+                  ImageUploadChanged="@OnImageUpdateChanged"
+                  ImageUploadEnded="@OnImageUploadEnded" />
     </div>
 </div>
 
 @code {
-    public string Title { get; set; } = "";
-    public string MarkdownContent { get; set; } = "";
+    private string title = "NewNote";
+    private string markdownContent = "";
+    private string imgUploadUrl = "";
+
+    [CascadingParameter]
+    public ApplicationContext? Context { get; set; }
+
+    [Parameter]
+    public string Note { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrWhiteSpace(Note))
+        {
+            title = "NewNote";
+            markdownContent = "";
+            return;
+        }
+
+        //The Link is always without the .md extension, so we need to add it back to load the content of the note.
+        var notePath = Uri.UnescapeDataString(Note) + ".md";
+
+        //The notePath is the full Path to the note, we need the file name which is the title of the note. but also the path to load the content of the note.
+        var fileInfo = new FileInfo(notePath);
+        title = Path.GetFileNameWithoutExtension(fileInfo.Name);
+        var path = fileInfo.Directory;
+
+        //Now load the content of the note from the StorageService
+        var content = StorageService.GetNote(fileInfo.Name, path?.FullName ?? "");
+        markdownContent = content;
+    }
+
+    void SaveNote()
+    {
+        var notePath = StorageService.CreateNote(title, "", markdownContent);
+
+        if (Context is not null)
+        {
+            Context.NotifyStorageUpdated();
+        }
+
+        //Make sure to navigate to the current note again
+        //before we can navigate, we need to prepare the path for the note, so we can navigate to it.
+        // Remove the .md extension
+        var notePathWithoutExtension = Path.ChangeExtension(notePath, null);
+
+        var notePathEncoded = Uri.EscapeDataString(notePathWithoutExtension);
+
+        NavigationManager.NavigateTo($"/{notePathEncoded}", true);
+    }
+
+    async Task OnImageUpdateChanged(FileChangedEventArgs e)
+    {
+        try
+        {
+            foreach (var file in e.Files)
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    const long maxFileSize = 10 * 1024 * 1024; // 10 MB
+                    using var readStream = file.OpenReadStream(maxAllowedSize: maxFileSize);
+                    using var memoryStream = new MemoryStream();
+
+                    await readStream.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0; // Reset position before reading in StorageService
+
+                    var result = StorageService.StoreImage(null, memoryStream);
+                    imgUploadUrl = result;
+                }                
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error uploading image: {ex.Message}");
+        }
+    }
+
+    Task OnImageUploadEnded(FileEndedEventArgs e)
+    {
+        // We need to report back to Markdown that upload is done. We do this by setting the UploadUrl.
+        // NOTE: Since we're faking the upload in this demo we will just set some dummy UploadUrl.
+        e.File.UploadUrl = imgUploadUrl;
+
+        imgUploadUrl = "";
+
+        return Task.CompletedTask;
+    }
 }

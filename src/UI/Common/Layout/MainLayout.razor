@@ -1,17 +1,29 @@
-﻿@using FSNotes.UI.Features.Structure.Components
+﻿@using FSNotes.UI.Common.Contexts
+@using FSNotes.UI.Features.Structure.Components
 @inherits LayoutComponentBase
 
-<div class="container">
-    <div class="side">
-        <StructureComponent />
+<CascadingValue Value="context">
+    <div class="container">
+        <div class="side">
+            <StructureComponent />
+        </div>
+        <main>
+            @Body
+        </main>
     </div>
-    <main>
-        @Body
-    </main>
-</div>
+</CascadingValue>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    ApplicationContext? context;
+
+    protected override void OnInitialized()
+    {
+        context = new ApplicationContext();
+    }
+}

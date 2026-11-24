@@ -1,7 +1,7 @@
-﻿@using FSNotes.UI.Features.Structure.Contexts
-@using FSNotes.UI.Features.Structure.Models
-@using FSNotes.UI.Features.Structure.Services
-@inject IStructureService StructureService
+﻿@using FSNotes.UI.Common.Contexts
+@using FSNotes.UI.Features.Storage.Models
+@using FSNotes.UI.Features.Storage.Services
+@inject IStorageService StorageService
 
 <div class="container" style="margin-left: @(Entity.Level * 1)rem;">
     <div class="line">
@@ -57,14 +57,16 @@
     private NewFolder newFolderRef = default!;
 
     [CascadingParameter]
-    public IStructureContext? Context { get; set; }
+    public ApplicationContext? Context { get; set; }
 
     [Parameter, EditorRequired]
-    public StructureEntity Entity { get; set; } = default!;
+    public StorageNode Entity { get; set; } = default!;
+
+
 
     bool canExpand()
     {
-        return Entity.Children.Count() > 0 && Entity.Type == StructureType.Folder;
+        return Entity.Children.Count() > 0 && Entity.IsFile == false;
     }
 
     void toggleExpand()
@@ -77,7 +79,7 @@
     {
         if (newFolderRef is not null)
         {
-            await newFolderRef.Show();
+            await newFolderRef.ShowAsync();
         }
     }
 
@@ -85,11 +87,11 @@
     {
         if (!string.IsNullOrWhiteSpace(folderName))
         {
-            await StructureService.AddFolder(folderName, Entity.Id);
+            StorageService.CreateFolder(folderName, Entity.FullPath);
 
             if (Context is not null)
             {
-                await Context.Reload();
+                Context.NotifyStorageUpdated();
             }
 
             await InvokeAsync(StateHasChanged);
